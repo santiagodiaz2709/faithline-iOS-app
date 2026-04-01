@@ -1,0 +1,9 @@
+{
+  "appId": "com.faithline.app",
+  "appName": "Faithline",
+  "webDir": "www",
+  "server": {
+    "url": "https://faithline.pro",
+    "cleartext": false
+  }
+}
