@@ -1,18 +1,20 @@
 import UIKit
+import StoreKit
 
 class SettingsViewController: UITableViewController {
 
     let items = [
+        "Characters",
         "About Us",
         "Privacy Policy",
         "Terms & Conditions",
-        "Contact Us",
-        "App Version"
+        "Rate App",
+        "App Version",
     ]
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        title = "Settings"
+        title = "Info"
     }
 
     override func tableView(_ tableView: UITableView,
@@ -46,11 +48,29 @@ class SettingsViewController: UITableViewController {
             )
             alert.addAction(UIAlertAction(title: "OK", style: .default))
             present(alert, animated: true)
-        } else {
-            let vc = UIViewController()
-            vc.view.backgroundColor = .systemBackground
-            vc.title = item
-            navigationController?.pushViewController(vc, animated: true)
+            return
         }
+
+        let webVC = WebViewController()
+
+        switch item {
+        case "Characters":
+            webVC.urlString = "https://faithline.pro/characters"
+        case "About Us":
+            webVC.urlString = "https://faithline.pro/about"
+        case "Privacy Policy":
+            webVC.urlString = "https://faithline.pro/privacy"
+        case "Terms & Conditions":
+            webVC.urlString = "https://faithline.pro/terms"
+        case "Rate App":
+            if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
+                SKStoreReviewController.requestReview(in: scene)
+            }
+        default:
+            return
+        }
+
+        webVC.title = item
+        navigationController?.pushViewController(webVC, animated: true)
     }
 }

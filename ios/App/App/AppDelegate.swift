@@ -10,6 +10,35 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
     ) -> Bool {
+
+        let navAppearance = UINavigationBarAppearance()
+        navAppearance.configureWithOpaqueBackground()
+        navAppearance.backgroundColor = UIColor(hex: "#FEFCEF")
+        navAppearance.titleTextAttributes = [
+            .foregroundColor: Theme.primaryColor
+        ]
+
+        // Back button icon
+        let backImage = UIImage(systemName: "arrow.left")
+        navAppearance.setBackIndicatorImage(backImage, transitionMaskImage: backImage)
+
+        // Back button text color
+        let backButtonAppearance = UIBarButtonItemAppearance()
+        backButtonAppearance.normal.titleTextAttributes = [
+            .foregroundColor: Theme.primaryColor
+        ]
+        navAppearance.backButtonAppearance = backButtonAppearance
+
+        UINavigationBar.appearance().standardAppearance = navAppearance
+        UINavigationBar.appearance().scrollEdgeAppearance = navAppearance
+        UINavigationBar.appearance().compactAppearance = navAppearance
+
+        UINavigationBar.appearance().tintColor = Theme.primaryColor
+
+        window = UIWindow(frame: UIScreen.main.bounds)
+        window?.rootViewController = MainTabBarController()
+        window?.makeKeyAndVisible()
+
         return true
     }
 
