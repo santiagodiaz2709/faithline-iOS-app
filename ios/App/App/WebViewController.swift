@@ -10,7 +10,7 @@ class WebViewController: UIViewController, WKNavigationDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        view.backgroundColor = .systemBackground
+        view.backgroundColor = .white
 
         webView = WKWebView(frame: .zero)
         webView.navigationDelegate = self

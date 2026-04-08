@@ -22,11 +22,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let backImage = UIImage(systemName: "arrow.left")
         navAppearance.setBackIndicatorImage(backImage, transitionMaskImage: backImage)
 
-        // Back button text color
         let backButtonAppearance = UIBarButtonItemAppearance()
-        backButtonAppearance.normal.titleTextAttributes = [
-            .foregroundColor: Theme.primaryColor
-        ]
+        backButtonAppearance.normal.titlePositionAdjustment = UIOffset(horizontal: -1000, vertical: 0)
+
         navAppearance.backButtonAppearance = backButtonAppearance
 
         UINavigationBar.appearance().standardAppearance = navAppearance

@@ -14,6 +14,7 @@ class SettingsViewController: UITableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = .white
         title = "Info"
     }
 
@@ -29,6 +30,8 @@ class SettingsViewController: UITableViewController {
         let cell = UITableViewCell(style: .default, reuseIdentifier: nil)
         cell.textLabel?.text = items[indexPath.row]
         cell.accessoryType = .disclosureIndicator
+        cell.backgroundColor = .clear
+        cell.textLabel?.textColor = .black
         return cell
     }
 
@@ -59,9 +62,9 @@ class SettingsViewController: UITableViewController {
         case "About Us":
             webVC.urlString = "https://faithline.pro/about"
         case "Privacy Policy":
-            webVC.urlString = "https://faithline.pro/privacy"
+            webVC.urlString = "https://faithline.pro/privacy-policy"
         case "Terms & Conditions":
-            webVC.urlString = "https://faithline.pro/terms"
+            webVC.urlString = "https://faithline.pro/terms-and-conditions"
         case "Rate App":
             if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
                 SKStoreReviewController.requestReview(in: scene)
