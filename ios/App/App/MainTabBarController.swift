@@ -27,6 +27,15 @@ class MainTabBarController: UITabBarController {
             image: UIImage(systemName: "book")?.withRenderingMode(.alwaysTemplate),
             selectedImage: UIImage(systemName: "book.fill")?.withRenderingMode(.alwaysTemplate)
         )
+        
+        // Bible (WebViewController)
+        let charactersVC = CharactersViewController()
+        let charactersNav = UINavigationController(rootViewController: charactersVC)
+        charactersNav.tabBarItem = UITabBarItem(
+            title: "Characters",
+            image: UIImage(systemName: "person.2")?.withRenderingMode(.alwaysTemplate),
+            selectedImage: UIImage(systemName: "person.2.fill")?.withRenderingMode(.alwaysTemplate)
+        )
 
         // Settings
         let settingsVC = SettingsViewController()
@@ -37,7 +46,7 @@ class MainTabBarController: UITabBarController {
             selectedImage: UIImage(systemName: "info.circle.fill")?.withRenderingMode(.alwaysTemplate)
         )
 
-        viewControllers = [homeVC, bibleNav, settingsNav]
+        viewControllers = [homeVC, bibleNav, charactersNav, settingsNav]
     }
 
     func setupAppearance1() {

@@ -4,7 +4,6 @@ import StoreKit
 class SettingsViewController: UITableViewController {
 
     let items = [
-        "Characters",
         "About Us",
         "Privacy Policy",
         "Terms & Conditions",
@@ -57,8 +56,6 @@ class SettingsViewController: UITableViewController {
         let webVC = WebViewController()
 
         switch item {
-        case "Characters":
-            webVC.urlString = "https://faithline.pro/characters"
         case "About Us":
             webVC.urlString = "https://faithline.pro/about"
         case "Privacy Policy":
@@ -69,6 +66,7 @@ class SettingsViewController: UITableViewController {
             if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
                 SKStoreReviewController.requestReview(in: scene)
             }
+            return
         default:
             return
         }

@@ -1,7 +1,7 @@
 import UIKit
 import WebKit
 
-class BibleViewController: UIViewController, WKNavigationDelegate {
+class CharactersViewController: UIViewController, WKNavigationDelegate {
 
     var webView: WKWebView!
     var loader: UIActivityIndicatorView!
@@ -10,7 +10,7 @@ class BibleViewController: UIViewController, WKNavigationDelegate {
         super.viewDidLoad()
 
         view.backgroundColor = .systemBackground
-        title = "Bible"
+        title = "Characters"
 
         // Create WebView
         webView = WKWebView(frame: .zero)
@@ -33,7 +33,7 @@ class BibleViewController: UIViewController, WKNavigationDelegate {
         view.addSubview(loader)
 
         // Load URL
-        if let url = URL(string: "https://faithline.pro/home") {
+        if let url = URL(string: "https://faithline.pro/characters") {
             webView.load(URLRequest(url: url))
         }
     }

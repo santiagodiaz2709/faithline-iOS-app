@@ -20,6 +20,7 @@
 		56AAEAAF2F80419900D8DDC3 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56AAEAAE2F80419900D8DDC3 /* SettingsViewController.swift */; };
 		56AAEAB12F80448D00D8DDC3 /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56AAEAB02F80448D00D8DDC3 /* WebViewController.swift */; };
 		56AAEAB32F804B8000D8DDC3 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56AAEAB22F804B8000D8DDC3 /* Theme.swift */; };
+		56E723052F87B6D3003AE3B7 /* CharactersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56E723042F87B6D3003AE3B7 /* CharactersViewController.swift */; };
 		56F536612F7C7649006CC9A0 /* MyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56F536602F7C7649006CC9A0 /* MyViewController.swift */; };
 /* End PBXBuildFile section */
 
@@ -38,6 +39,7 @@
 		56AAEAAE2F80419900D8DDC3 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		56AAEAB02F80448D00D8DDC3 /* WebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewController.swift; sourceTree = "<group>"; };
 		56AAEAB22F804B8000D8DDC3 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
+		56E723042F87B6D3003AE3B7 /* CharactersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CharactersViewController.swift; sourceTree = "<group>"; };
 		56F536602F7C7649006CC9A0 /* MyViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyViewController.swift; sourceTree = "<group>"; };
 		958DCC722DB07C7200EA8C5F /* debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = debug.xcconfig; path = ../debug.xcconfig; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
@@ -79,6 +81,7 @@
 				56F536602F7C7649006CC9A0 /* MyViewController.swift */,
 				56AAEAAA2F80413B00D8DDC3 /* MainTabBarController.swift */,
 				56AAEAAC2F80417400D8DDC3 /* BibleViewController.swift */,
+				56E723042F87B6D3003AE3B7 /* CharactersViewController.swift */,
 				56AAEAAE2F80419900D8DDC3 /* SettingsViewController.swift */,
 				56AAEAB02F80448D00D8DDC3 /* WebViewController.swift */,
 				56AAEAB22F804B8000D8DDC3 /* Theme.swift */,
@@ -172,6 +175,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				56E723052F87B6D3003AE3B7 /* CharactersViewController.swift in Sources */,
 				56F536612F7C7649006CC9A0 /* MyViewController.swift in Sources */,
 				56AAEAB12F80448D00D8DDC3 /* WebViewController.swift in Sources */,
 				504EC3081FED79650016851F /* AppDelegate.swift in Sources */,
@@ -320,10 +324,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = 7U3F39C4P9;
 				INFOPLIST_FILE = App/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = FaithLine.pro;
+				INFOPLIST_KEY_CFBundleDisplayName = FaithLine;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.books";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -347,10 +351,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = 7U3F39C4P9;
 				INFOPLIST_FILE = App/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = FaithLine.pro;
+				INFOPLIST_KEY_CFBundleDisplayName = FaithLine;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.books";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
