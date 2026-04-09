@@ -7,6 +7,7 @@ class MainTabBarController: UITabBarController {
 
         setupTabs()
         setupAppearance()
+        forceBottomTabBar()
     }
 
     func setupTabs() {
@@ -19,7 +20,7 @@ class MainTabBarController: UITabBarController {
             selectedImage: UIImage(systemName: "house.fill")?.withRenderingMode(.alwaysTemplate)
         )
 
-        // Bible (WebViewController)
+        // Bible
         let bibleVC = BibleViewController()
         let bibleNav = UINavigationController(rootViewController: bibleVC)
         bibleNav.tabBarItem = UITabBarItem(
@@ -28,7 +29,7 @@ class MainTabBarController: UITabBarController {
             selectedImage: UIImage(systemName: "book.fill")?.withRenderingMode(.alwaysTemplate)
         )
         
-        // Bible (WebViewController)
+        // Bible 
         let charactersVC = CharactersViewController()
         let charactersNav = UINavigationController(rootViewController: charactersVC)
         charactersNav.tabBarItem = UITabBarItem(
@@ -48,28 +49,11 @@ class MainTabBarController: UITabBarController {
 
         viewControllers = [homeVC, bibleNav, charactersNav, settingsNav]
     }
-
-    func setupAppearance1() {
-        
-        let appearance = UITabBarAppearance()
-        appearance.configureWithOpaqueBackground()
-        appearance.backgroundColor = UIColor.clear
-
-        appearance.stackedLayoutAppearance.selected.iconColor = .white
-        appearance.stackedLayoutAppearance.selected.titleTextAttributes = [.foregroundColor: UIColor.white]
-
-        appearance.stackedLayoutAppearance.normal.iconColor = UIColor.black
-        appearance.stackedLayoutAppearance.normal.titleTextAttributes = [.foregroundColor: UIColor.black]
-
-        tabBar.standardAppearance = appearance
-        tabBar.scrollEdgeAppearance = appearance
-        tabBar.tintColor = .white
-        
-        tabBar.isTranslucent = false
-        tabBar.backgroundColor = Theme.primaryColor
-        tabBar.layer.borderWidth = 0
-        tabBar.layer.borderColor = UIColor.clear.cgColor
-        
+    
+    func forceBottomTabBar() {
+        if #available(iOS 18.0, *) {
+            self.traitOverrides.horizontalSizeClass = .compact
+        }
     }
     
     func setupAppearance() {
