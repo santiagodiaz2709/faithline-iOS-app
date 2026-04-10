@@ -11,6 +11,9 @@ class SettingsViewController: UITableViewController {
         "App Version",
     ]
 
+    private var loaderContainer: UIView?
+    private var activityIndicator: UIActivityIndicatorView?
+
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
@@ -28,7 +31,13 @@ class SettingsViewController: UITableViewController {
 
         let cell = UITableViewCell(style: .default, reuseIdentifier: nil)
         cell.textLabel?.text = items[indexPath.row]
-        cell.accessoryType = .disclosureIndicator
+
+        if items[indexPath.row] == "App Version" {
+            cell.accessoryType = .none
+        } else {
+            cell.accessoryType = .disclosureIndicator
+        }
+
         cell.backgroundColor = .clear
         cell.textLabel?.textColor = .black
         return cell
@@ -58,20 +67,80 @@ class SettingsViewController: UITableViewController {
         switch item {
         case "About Us":
             webVC.urlString = "https://faithline.pro/about"
+
         case "Privacy Policy":
             webVC.urlString = "https://faithline.pro/privacy-policy"
+
         case "Terms & Conditions":
             webVC.urlString = "https://faithline.pro/terms-and-conditions"
+
         case "Rate App":
-            if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
-                SKStoreReviewController.requestReview(in: scene)
+            showLoader()
+
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { [weak self] in
+                guard let self = self else { return }
+
+                if let scene = UIApplication.shared.connectedScenes
+                    .first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene {
+                    SKStoreReviewController.requestReview(in: scene)
+                }
+
+                // Apple does not provide callback for popup shown/dismissed.
+                // So hide loader after a short delay.
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                    self.hideLoader()
+                }
             }
             return
+
         default:
             return
         }
 
         webVC.title = item
         navigationController?.pushViewController(webVC, animated: true)
+    }
+
+    // MARK: - Loader
+
+    private func showLoader() {
+        guard loaderContainer == nil else { return }
+
+        let container = UIView(frame: view.bounds)
+        container.backgroundColor = UIColor.black.withAlphaComponent(0.25)
+        container.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+
+        let loaderBox = UIView()
+        loaderBox.translatesAutoresizingMaskIntoConstraints = false
+        loaderBox.backgroundColor = UIColor.white
+        loaderBox.layer.cornerRadius = 12
+
+        let indicator = UIActivityIndicatorView(style: .large)
+        indicator.translatesAutoresizingMaskIntoConstraints = false
+        indicator.startAnimating()
+
+        container.addSubview(loaderBox)
+        loaderBox.addSubview(indicator)
+        view.addSubview(container)
+
+        NSLayoutConstraint.activate([
+            loaderBox.centerXAnchor.constraint(equalTo: container.centerXAnchor),
+            loaderBox.centerYAnchor.constraint(equalTo: container.centerYAnchor),
+            loaderBox.widthAnchor.constraint(equalToConstant: 100),
+            loaderBox.heightAnchor.constraint(equalToConstant: 100),
+
+            indicator.centerXAnchor.constraint(equalTo: loaderBox.centerXAnchor),
+            indicator.centerYAnchor.constraint(equalTo: loaderBox.centerYAnchor)
+        ])
+
+        loaderContainer = container
+        activityIndicator = indicator
+    }
+
+    private func hideLoader() {
+        activityIndicator?.stopAnimating()
+        loaderContainer?.removeFromSuperview()
+        loaderContainer = nil
+        activityIndicator = nil
     }
 }
