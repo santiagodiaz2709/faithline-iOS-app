@@ -6,9 +6,9 @@ class SettingsViewController: UITableViewController {
     let items = [
         "About Us",
         "Privacy Policy",
-        "Terms & Conditions",
-        "Rate App",
-        "App Version",
+        "Terms & Conditions"
+        // "Rate App",
+        // "App Version",
     ]
 
     private var loaderContainer: UIView?
@@ -16,8 +16,11 @@ class SettingsViewController: UITableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
         view.backgroundColor = .white
         title = "Info"
+        tableView.backgroundColor = .white
+        tableView.tableFooterView = UIView()
     }
 
     override func tableView(_ tableView: UITableView,
@@ -26,13 +29,14 @@ class SettingsViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView,
-                            cellForRowAt indexPath: IndexPath)
-    -> UITableViewCell {
+                            cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 
         let cell = UITableViewCell(style: .default, reuseIdentifier: nil)
-        cell.textLabel?.text = items[indexPath.row]
+        let item = items[indexPath.row]
 
-        if items[indexPath.row] == "App Version" {
+        cell.textLabel?.text = item
+
+        if item == "App Version" {
             cell.accessoryType = .none
         } else {
             cell.accessoryType = .disclosureIndicator
@@ -40,6 +44,8 @@ class SettingsViewController: UITableViewController {
 
         cell.backgroundColor = .clear
         cell.textLabel?.textColor = .black
+        cell.selectionStyle = .default
+
         return cell
     }
 
@@ -50,6 +56,8 @@ class SettingsViewController: UITableViewController {
 
         let item = items[indexPath.row]
 
+        // Uncomment if needed later
+        /*
         if item == "App Version" {
             let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0"
             let alert = UIAlertController(
@@ -61,6 +69,28 @@ class SettingsViewController: UITableViewController {
             present(alert, animated: true)
             return
         }
+        */
+
+        // Uncomment if needed later
+        /*
+        if item == "Rate App" {
+            showLoader()
+
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { [weak self] in
+                guard let self = self else { return }
+
+                if let scene = UIApplication.shared.connectedScenes
+                    .first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene {
+                    SKStoreReviewController.requestReview(in: scene)
+                }
+
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                    self.hideLoader()
+                }
+            }
+            return
+        }
+        */
 
         let webVC = WebViewController()
 
@@ -74,30 +104,12 @@ class SettingsViewController: UITableViewController {
         case "Terms & Conditions":
             webVC.urlString = "https://faithline.pro/terms-and-conditions"
 
-        case "Rate App":
-            showLoader()
-
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { [weak self] in
-                guard let self = self else { return }
-
-                if let scene = UIApplication.shared.connectedScenes
-                    .first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene {
-                    SKStoreReviewController.requestReview(in: scene)
-                }
-
-                // Apple does not provide callback for popup shown/dismissed.
-                // So hide loader after a short delay.
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                    self.hideLoader()
-                }
-            }
-            return
-
         default:
             return
         }
 
         webVC.title = item
+        webVC.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(webVC, animated: true)
     }
 
@@ -112,7 +124,7 @@ class SettingsViewController: UITableViewController {
 
         let loaderBox = UIView()
         loaderBox.translatesAutoresizingMaskIntoConstraints = false
-        loaderBox.backgroundColor = UIColor.white
+        loaderBox.backgroundColor = .white
         loaderBox.layer.cornerRadius = 12
 
         let indicator = UIActivityIndicatorView(style: .large)
