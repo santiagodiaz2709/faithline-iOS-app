@@ -7,7 +7,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
-	<string>FaithLine Pro</string>
+	<string>FaithLine</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -29,6 +29,10 @@
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
 	</dict>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>FaithLine uses your microphone to let you speak your prayer aloud.</string>
+    <key>NSSpeechRecognitionUsageDescription</key>
+    <string>FaithLine uses speech recognition to convert your spoken prayer to text.</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>

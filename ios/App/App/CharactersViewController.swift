@@ -1,7 +1,8 @@
 import UIKit
 import WebKit
+import AVFoundation
 
-class CharactersViewController: UIViewController, WKNavigationDelegate, WKScriptMessageHandler {
+class CharactersViewController: UIViewController, WKNavigationDelegate, WKScriptMessageHandler, WKUIDelegate {
 
     private var webView: WKWebView?
     private var loader: UIActivityIndicatorView?
@@ -30,10 +31,14 @@ class CharactersViewController: UIViewController, WKNavigationDelegate, WKScript
     private func setupWebView() {
         let config = WKWebViewConfiguration()
         let userContentController = WKUserContentController()
+
         config.userContentController = userContentController
+        config.allowsInlineMediaPlayback = true
+        config.mediaTypesRequiringUserActionForPlayback = []
 
         let createdWebView = WKWebView(frame: .zero, configuration: config)
         createdWebView.navigationDelegate = self
+        createdWebView.uiDelegate = self
         createdWebView.translatesAutoresizingMaskIntoConstraints = false
         createdWebView.scrollView.contentInsetAdjustmentBehavior = .never
 
@@ -52,6 +57,7 @@ class CharactersViewController: UIViewController, WKNavigationDelegate, WKScript
         let createdLoader = UIActivityIndicatorView(style: .large)
         createdLoader.translatesAutoresizingMaskIntoConstraints = false
         createdLoader.hidesWhenStopped = true
+        createdLoader.color = Theme.primaryColor
 
         view.addSubview(createdLoader)
         self.loader = createdLoader
@@ -155,6 +161,28 @@ class CharactersViewController: UIViewController, WKNavigationDelegate, WKScript
         postURLIfNeeded(currentURL)
     }
 
+    @available(iOS 15.0, *)
+    func webView(
+        _ webView: WKWebView,
+        requestMediaCapturePermissionFor origin: WKSecurityOrigin,
+        initiatedByFrame frame: WKFrameInfo,
+        type: WKMediaCaptureType,
+        decisionHandler: @escaping (WKPermissionDecision) -> Void
+    ) {
+        guard type == .microphone || type == .cameraAndMicrophone else {
+            decisionHandler(.deny)
+            return
+        }
+        // AVAudioSession.requestRecordPermission triggers the iOS system
+        // "FaithLine wants to access your microphone" dialog on first use.
+        // decisionHandler(.grant) bypasses this dialog and silently fails.
+        AVAudioSession.sharedInstance().requestRecordPermission { granted in
+            DispatchQueue.main.async {
+                decisionHandler(granted ? .grant : .deny)
+            }
+        }
+    }
+
     // MARK: - WKNavigationDelegate
 
     func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
@@ -164,10 +192,31 @@ class CharactersViewController: UIViewController, WKNavigationDelegate, WKScript
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         loader?.stopAnimating()
 
+        injectJavaScriptErrorLogger(into: webView)
+
         if let currentURL = webView.url?.absoluteString {
             print("Characters didFinish URL: \(currentURL)")
             postURLIfNeeded(currentURL)
         }
+    }
+
+    private func injectJavaScriptErrorLogger(into webView: WKWebView) {
+        let js = """
+        (function() {
+            if (window.__faithlineErrorLoggerInstalled) return;
+            window.__faithlineErrorLoggerInstalled = true;
+
+            window.onerror = function(message, source, lineno, colno, error) {
+                console.log("FAITHLINE_JS_ERROR:", message, source, lineno, colno);
+            };
+
+            window.addEventListener('unhandledrejection', function(event) {
+                console.log("FAITHLINE_JS_PROMISE_ERROR:", event.reason);
+            });
+        })();
+        """
+
+        webView.evaluateJavaScript(js, completionHandler: nil)
     }
 
     func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
@@ -180,3 +229,4 @@ class CharactersViewController: UIViewController, WKNavigationDelegate, WKScript
         print("Characters provisional navigation failed: \(error.localizedDescription)")
     }
 }
+

@@ -1,158 +1,71 @@
 import UIKit
 import StoreKit
 
-class SettingsViewController: UITableViewController {
+final class ReviewManager {
 
-    let items = [
-        "About Us",
-        "Privacy Policy",
-        "Terms & Conditions"
-        // "Rate App",
-        // "App Version",
-    ]
+    static let shared = ReviewManager()
 
-    private var loaderContainer: UIView?
-    private var activityIndicator: UIActivityIndicatorView?
+    private let engagementCountKey = "review_positive_engagement_count"
+    private let lastPromptDateKey = "review_last_prompt_date"
+    private let lastPromptVersionKey = "review_last_prompt_version"
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
+    private let minimumEngagementCount = 3
+    private let minimumDaysBetweenPrompts = 7
 
-        view.backgroundColor = .white
-        title = "Info"
-        tableView.backgroundColor = .white
-        tableView.tableFooterView = UIView()
-    }
+    private init() {}
 
-    override func tableView(_ tableView: UITableView,
-                            numberOfRowsInSection section: Int) -> Int {
-        return items.count
-    }
+    func trackPositiveEngagement(from viewController: UIViewController?) {
+        let count = UserDefaults.standard.integer(forKey: engagementCountKey) + 1
+        UserDefaults.standard.set(count, forKey: engagementCountKey)
 
-    override func tableView(_ tableView: UITableView,
-                            cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard shouldRequestReview(count: count) else { return }
 
-        let cell = UITableViewCell(style: .default, reuseIdentifier: nil)
-        let item = items[indexPath.row]
-
-        cell.textLabel?.text = item
-
-        if item == "App Version" {
-            cell.accessoryType = .none
-        } else {
-            cell.accessoryType = .disclosureIndicator
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
+            self.requestNativeReviewPrompt(from: viewController)
         }
-
-        cell.backgroundColor = .clear
-        cell.textLabel?.textColor = .black
-        cell.selectionStyle = .default
-
-        return cell
     }
 
-    override func tableView(_ tableView: UITableView,
-                            didSelectRowAt indexPath: IndexPath) {
+    func requestNativeReviewPrompt(from viewController: UIViewController?) {
+        DispatchQueue.main.async {
+            guard let scene = viewController?.view.window?.windowScene ??
+                    UIApplication.shared.connectedScenes
+                        .first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene
+            else { return }
 
-        tableView.deselectRow(at: indexPath, animated: true)
+            SKStoreReviewController.requestReview(in: scene)
 
-        let item = items[indexPath.row]
+            UserDefaults.standard.set(Date(), forKey: self.lastPromptDateKey)
 
-        // Uncomment if needed later
-        /*
-        if item == "App Version" {
-            let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0"
-            let alert = UIAlertController(
-                title: "App Version",
-                message: version,
-                preferredStyle: .alert
-            )
-            alert.addAction(UIAlertAction(title: "OK", style: .default))
-            present(alert, animated: true)
+            let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
+            UserDefaults.standard.set(version, forKey: self.lastPromptVersionKey)
+        }
+    }
+
+    func openAppStoreReviewPage() {
+        guard let url = URL(string: "itms-apps://itunes.apple.com/app/id6759672567?action=write-review") else {
             return
         }
-        */
 
-        // Uncomment if needed later
-        /*
-        if item == "Rate App" {
-            showLoader()
+        UIApplication.shared.open(url, options: [:], completionHandler: nil)
+    }
 
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { [weak self] in
-                guard let self = self else { return }
+    private func shouldRequestReview(count: Int) -> Bool {
+        guard count >= minimumEngagementCount else { return false }
 
-                if let scene = UIApplication.shared.connectedScenes
-                    .first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene {
-                    SKStoreReviewController.requestReview(in: scene)
-                }
+        let currentVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
+        let lastPromptVersion = UserDefaults.standard.string(forKey: lastPromptVersionKey)
 
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                    self.hideLoader()
-                }
+        if lastPromptVersion == currentVersion {
+            return false
+        }
+
+        if let lastDate = UserDefaults.standard.object(forKey: lastPromptDateKey) as? Date {
+            let days = Calendar.current.dateComponents([.day], from: lastDate, to: Date()).day ?? 0
+            if days < minimumDaysBetweenPrompts {
+                return false
             }
-            return
-        }
-        */
-
-        let webVC = WebViewController()
-
-        switch item {
-        case "About Us":
-            webVC.urlString = "https://faithline.pro/about"
-
-        case "Privacy Policy":
-            webVC.urlString = "https://faithline.pro/privacy-policy"
-
-        case "Terms & Conditions":
-            webVC.urlString = "https://faithline.pro/terms-and-conditions"
-
-        default:
-            return
         }
 
-        webVC.title = item
-        webVC.hidesBottomBarWhenPushed = true
-        navigationController?.pushViewController(webVC, animated: true)
-    }
-
-    // MARK: - Loader
-
-    private func showLoader() {
-        guard loaderContainer == nil else { return }
-
-        let container = UIView(frame: view.bounds)
-        container.backgroundColor = UIColor.black.withAlphaComponent(0.25)
-        container.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-
-        let loaderBox = UIView()
-        loaderBox.translatesAutoresizingMaskIntoConstraints = false
-        loaderBox.backgroundColor = .white
-        loaderBox.layer.cornerRadius = 12
-
-        let indicator = UIActivityIndicatorView(style: .large)
-        indicator.translatesAutoresizingMaskIntoConstraints = false
-        indicator.startAnimating()
-
-        container.addSubview(loaderBox)
-        loaderBox.addSubview(indicator)
-        view.addSubview(container)
-
-        NSLayoutConstraint.activate([
-            loaderBox.centerXAnchor.constraint(equalTo: container.centerXAnchor),
-            loaderBox.centerYAnchor.constraint(equalTo: container.centerYAnchor),
-            loaderBox.widthAnchor.constraint(equalToConstant: 100),
-            loaderBox.heightAnchor.constraint(equalToConstant: 100),
-
-            indicator.centerXAnchor.constraint(equalTo: loaderBox.centerXAnchor),
-            indicator.centerYAnchor.constraint(equalTo: loaderBox.centerYAnchor)
-        ])
-
-        loaderContainer = container
-        activityIndicator = indicator
-    }
-
-    private func hideLoader() {
-        activityIndicator?.stopAnimating()
-        loaderContainer?.removeFromSuperview()
-        loaderContainer = nil
-        activityIndicator = nil
+        return true
     }
 }

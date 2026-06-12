@@ -6,8 +6,8 @@ class SettingsViewController: UITableViewController {
     let items = [
         "About Us",
         "Privacy Policy",
-        "Terms & Conditions"
-        // "Rate App",
+        "Terms & Conditions",
+        "Rate App"
         // "App Version",
     ]
 
@@ -91,6 +91,10 @@ class SettingsViewController: UITableViewController {
             return
         }
         */
+        if item == "Rate App" {
+            ReviewManager.shared.requestNativeReviewPrompt(from: self)
+            return
+        }
 
         let webVC = WebViewController()
 
